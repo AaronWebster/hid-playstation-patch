@@ -1,0 +1,3 @@
+hid-playstation.c usr/src/hid-playstation-edge-1.0.0/
+hid-ids.h usr/src/hid-playstation-edge-1.0.0/
+Makefile usr/src/hid-playstation-edge-1.0.0/

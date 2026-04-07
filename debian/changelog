@@ -1,0 +1,6 @@
+hid-playstation-edge-dkms (1.0.0-1) unstable; urgency=medium
+
+  * Initial release.
+  * Add DualSense Edge extra button support (Fn1, Fn2, paddles).
+
+ -- Aaron Webster <awebster@gmail.com>  Mon, 06 Apr 2026 00:00:00 +0000

@@ -1,0 +1,17 @@
+Source: hid-playstation-edge-dkms
+Section: kernel
+Priority: optional
+Maintainer: Aaron Webster <awebster@gmail.com>
+Build-Depends: debhelper-compat (= 13), dkms
+Standards-Version: 4.6.2
+
+Package: hid-playstation-edge-dkms
+Architecture: all
+Depends: dkms, ${misc:Depends}
+Description: DualSense Edge extra buttons kernel module (DKMS)
+ Patched hid-playstation kernel module that exposes the four extra
+ buttons on the PlayStation DualSense Edge controller (product 0x0df2):
+ Fn1, Fn2, left paddle, and right paddle as BTN_TRIGGER_HAPPY1-4.
+ .
+ This package uses DKMS to automatically rebuild the module for each
+ installed kernel version.

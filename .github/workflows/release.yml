@@ -1,0 +1,50 @@
+name: Build and Release .deb
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set version
+        id: version
+        run: |
+          VERSION="$(date +'%Y.%m.%d').${{ github.run_number }}"
+          TAG="v${VERSION}"
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
+
+      - name: Install build dependencies
+        run: sudo apt-get update && sudo apt-get install -y dpkg-dev debhelper dkms
+
+      - name: Update debian package version
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+
+          # Update changelog with new version
+          sed -i "1s/([^)]*)/($VERSION)/" debian/changelog
+
+          # Update dkms.conf version
+          sed -i "s/^PACKAGE_VERSION=.*/PACKAGE_VERSION=\"$VERSION\"/" dkms.conf
+
+          # Update dh_dkms version in rules
+          sed -i "s/dh_dkms -V .*/dh_dkms -V $VERSION/" debian/rules
+
+          # Update install paths
+          sed -i "s|hid-playstation-edge-[0-9.]*|hid-playstation-edge-$VERSION|g" debian/hid-playstation-edge-dkms.install
+
+      - name: Build .deb package
+        run: dpkg-buildpackage -us -uc -b
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          name: Release ${{ steps.version.outputs.tag }}
+          generate_release_notes: true
+          files: ../*.deb
